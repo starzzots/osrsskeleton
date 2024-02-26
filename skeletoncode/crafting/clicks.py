@@ -33,21 +33,20 @@ class Bag():
             if pg.pixel(i[0],i[1]) == rgb:
                 count+=1
                 temp=i
-        pg.leftClick(self.bag[1],duration=.3)
+        pg.leftClick(self.bag[1],duration=.3)#clicks bag slot 3
         time.sleep(.8)
-        pg.leftClick(temp, duration=.3)
+        pg.leftClick(temp, duration=.3)#clicks the last item found with rgb color and clicks that spot
         time.sleep(1)
-        keyboard.press_and_release('space')
-        time.sleep(ticks*(count+1))
-        keyboard.press('pageup')
+        keyboard.press_and_release('space') #have to manaully in osrs first craft the item you want then the hotkey will be space for it
+        time.sleep(ticks*(count+1))# counts how many of the objs are in inv and sleeps according to how many items are there. For waiting time for evewrything to be crafted
+        keyboard.press('pageup')# hotkey to switch worlds
         time.sleep(5)
-        keyboard.release('pageup')
+        keyboard.release('pageup')# release the key presss
         time.sleep(7.5)
-        keyboard.press('x')
+        keyboard.press('x')# bag hotkey ppress
         time.sleep(1)
-        keyboard.release('x')
+        keyboard.release('x')#bag hotkey release
         time.sleep(2.5)
-
 
           
      
