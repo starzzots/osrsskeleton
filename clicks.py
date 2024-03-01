@@ -1,15 +1,10 @@
-<<<<<<< HEAD
-=======
 import pyautogui as pg
 import mouse
 import time
->>>>>>> 61d619cf3ea1a995a4b021abc9ea1ca8a664e2b7
 import random
-import time
+import win32con, win32api
 import keyboard
-import pyautogui as pg
-import win32api
-import win32con
+from win32gui import FindWindow, GetWindowRect
 
 
 
