@@ -1,9 +1,9 @@
-import pyautogui as pg
-import time
 import random
-import win32con, win32api
+import time
 import keyboard
-from win32gui import FindWindow, GetWindowRect
+import pyautogui as pg
+import win32api
+import win32con
 
 
 class Randomize():
