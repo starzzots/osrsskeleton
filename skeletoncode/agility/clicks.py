@@ -53,9 +53,11 @@ class Randomize():
     def randleft(self):
         time.sleep(self.click_random_sec)
         pg.moveTo(self.new_x,self.new_y, duration=.45)
+        pg.keyDown('shift')
         win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, self.new_x, self.new_y, 0, 0)
         time.sleep(self.click_random_sec)
         win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, self.new_x, self.new_y, 0, 0)
+        pg.keyUp('shift')
         time.sleep(self.click_random_sec)
     
     

@@ -183,9 +183,10 @@ def course():
 
 
 while not running:
+    time.sleep(random.choice(range(1,11)) / 10)
     check_login()
     course()
-    time.sleep(random.choice(range(7, 10)) / 10)
+    time.sleep(random.choice(range(8,11)) / 10)
     if laps == random.choice(range(80,120)):
        log_out()
 
