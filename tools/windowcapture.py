@@ -45,7 +45,7 @@ class WindowCapture:
         # images into actual screen positions
         self.offset_x = self.window_rect[0] + self.cropped_x
         self.offset_y = self.window_rect[1] + self.cropped_y
-
+        self.coords=(self.offset_x, self.window_rect[1], self.offset_x+1080, self.offset_y+680-38)
     def get_screenshot(self,num=0):
 
         # get the window image data
