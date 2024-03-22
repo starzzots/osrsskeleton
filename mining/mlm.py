@@ -255,22 +255,27 @@ while True:
                 sleep(1)
                 keyboard.release('x')#bag hotkey release
                 sleep(2.5)
-            
-            upstairs = True
-            Randomize(hopper).randleft()
-            sleep(4)
+            elif count != 2:
+                upstairs = True
+                Randomize(hopper).randleft()
+                sleep(4)
+                keyboard.press_and_release('space')
+            else:
+                upstairs = False
+                Randomize(hopper).randleft()
+                sleep(4)
+                keyboard.press_and_release('space')
         
         elif upcheck == pos2:
             if count != 2:
                 upstairs = True
                 Randomize(ladderfromhopper).randleft()
                 sleep(8)
-
-            keyboard.press_and_release('space')   
+                
+            keyboard.press_and_release('space')
             Randomize(collector).randleft()
             count = 0
             sleep(6)
-
             
         elif upcheck == pos3:
             Randomize(bank).randleft()
