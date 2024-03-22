@@ -12,22 +12,26 @@ from datetime import datetime
 
 # initialize the WindowCapture class
 wincap = WindowCapture('RuneLite')
-rockobs = Vision('images\\rock3.jpg')
-miningspot=Vision('images\\miningicon.jpg')
-topladder=Vision('images\\topladder.jpg')
-hopper=Vision('images\\deposit.jpg')
-bottomladder=Vision('images\\bottomladder.jpg')
-bottomladder2=Vision('images\\bottomladder2.jpg')
-bankdeposit=Vision('images\\bank_deposit.jpg')
-depositbutton=Vision('images\\depositbutton.jpg')
-exitbutton=Vision('images\\exitbutton.jpg')
-rock2 = Vision('images\\rockfromladder.jpg')
+rockobs = Vision('images\\rock.jpg')
 
 
-yellow=(255,255,0)
+pos1=(0,0,1)
+pos2=(0,0,2)
+pos3=(0,0,3)
+pos4=(0,0,4)
+pos5=(0,0,5)
+pos6=(0,0,6)
 
-obstcale= True # if obstcale == true then start check for yellow down else check from left
+
+yellow = (255,255,0)
+red = (255,0,0)
+bagslotcolor = (62,53,41)
+miningrockcolor = (0,241,255)
+bankcheckc = (73,64,52)
+
 upstairs=True #helps me figure out where i am in game
+
+
 def player():
     #threshhold .78 when mining
     delta2=9# double this for 3842*2160
@@ -45,9 +49,29 @@ def player():
     playerbottom =(w1,h1+8)
     playercenter=(w1,h1)
     playerright=(w1+8,h1)
-    playerup=(w1,h1-6)
+    playerup=(w1,h1-8)
     return playerleft,playerbottom,playerright,playerup,playercenter
 
+def findobjat(objsRGBVal):
+    flag=0
+    wincap = WindowCapture('RuneLite')
+    screenshot=pg.screenshot('test.png',region=(wincap.coords[0],wincap.coords[1],1080,670))
+    objsRGBVal=miningrockcolor
+    width, height = screenshot.size
+    
+    for y in range(0, 670, 2):
+        for x in range(0, 1080, 2):
+            rgb = screenshot.getpixel((x, y))
+            if rgb==objsRGBVal:
+                flag = 1
+                new_x= x+wincap.coords[0]
+                new_y= y+wincap.coords[1]
+                sleep(0.05)
+                break
+                            
+        if flag == 1:
+                return new_x,new_y
+            
 
 def createcoords(coords):
     #coords coming in must be a tuple (x,y)
@@ -64,40 +88,45 @@ def checkbag(inventory,ss):
     rectangles= img.find(ss,0.90)# you can go into the Visions.find() in visions.py and uncomment out the debug mode to see what pc sees
     total = len(rectangles)
     return total
-def lastslot():
-    #takes x,y tuple () the x and y find with the pixel finder tool and plug in the x y for ogj on screen you wanna get
-    #may need to double the delta1 and 2 for 3840*2160
-    delta1=334
-    delta2=63
-    location = wincap.coords[2]-delta1,wincap.coords[3]-delta2
-    return location
-def collector():
-    #444,613
-    #may need to double the delta1 and 2 for 3840*2160
-    delta1=694
-    delta2=110
-    location=wincap.coords[2]-delta1,wincap.coords[3]-delta2
-    return location
+
+class Locate():
+    def __init__(self, deltax, deltay):
+        self.deltax=deltax
+        self.deltay=deltay
+        self.locationc = wincap.coords[2]-self.deltax,wincap.coords[3]-self.deltay
+    def item(self):
+        location = (self.locationc[0],self.locationc[0],self.locationc[1],self.locationc[1])
+        return location
+
+
 def collectorfromdeposit():
     #296,483
     #may need to double the delta1 and 2 for 3840*2160
     delta1=842
     delta2=240
     location=wincap.coords[2]-delta1,wincap.coords[3]-delta2
+    
     return location
 
 def time_passed(current_time, secs):
     return time() - current_time >= secs
-i=0
-j=0
+
 count=0
 bankcounts=0
+logcounter=0
 
-
-
+"""while start == True:
+    if datetime.now().second == 50:
+        print('rock depleted')
+    else:
+        print('mining...')"""
+        
 #334,63 from bottom right when paneel open in osrs thats the click distance to get to last slot 
 while True:
+    
     ss = wincap.get_screenshot()
+    #print(wincap.coords)
+
     #paydirt= Vision('images\paydirt.jpg')
     #miningspot=Vision('images\miningspot.jpg')
     loop_time = time()
@@ -107,31 +136,201 @@ while True:
     #print(lastslot())
     #pg.moveTo(wincap.coords[2],wincap.coords[3])
     #pg.moveTo(lastslot())
-    lastslotcheck=pg.pixel(lastslot()[0],lastslot()[1])
-    collectorclick=(collector()[0],collector()[0],collector()[1],collector()[1])
+    lastslot=Locate(334,63).item()
+    collector=Locate(694,110).item()
+    hopper=Locate(795,325).item()
+    bank=Locate(508,409).item()
+    ladderfrombank=Locate(729,487).item()
+    rockfromladdercheck=Locate(548,202).item()
+    rock_in_my_way=Locate(557,206).item()
+    miningspotfromladder=Locate(560,43).item()
+    miningspotfromrock = Locate(661,159).item()
+    fromrocktoladder = Locate(790,437).item()
+    ladderfromhopper = Locate(571,348).item()
+    depositbutton = Locate(727,307).item()
+    exitbutton = Locate(592,526).item()
+    ladderfrombank = Locate(730,489).item()
+    collectorfrombank = Locate(842,241).item()
     #print(lastslotcheck)
-    #-7 x for checkingleft while mining for color change
+    #-8 x for checkingleft while mining for color change
     left=player()[0]
     down=player()[1]
     right=player()[2]
     up=player()[3]
     center=player()[-1]
-    
+    checkrock=pg.pixel(rockfromladdercheck[0],rockfromladdercheck[-1])
+    lastslotcheck=pg.pixel(lastslot[0],lastslot[-1])
+
     leftcheck=pg.pixel(left[0],left[1])
     downcheck=pg.pixel(down[0],down[1])
     rightcheck=pg.pixel(right[0],right[1])
     upcheck=pg.pixel(up[0],up[1])
     centercheck=pg.pixel(center[0],center[1])
+
+
+    #print(wincap.coords)
+    #print(upcheck)
+    #Randomize((center[0],center[0],center[1],center[1])).move()
+    
+    
     #pg.moveTo(down)
     #pg.moveTo(left)
     #pg.moveTo(down)
     #pg.moveTo(right)
     #pg.moveTo(center)
-    #print(centercheck)
+    #print(lastslotcheck)
+    #Randomize(lastslot).move()
     #print(wincap.coords)
+    
     #Randomize((collectorfromdeposit()[0],collectorfromdeposit()[0],collectorfromdeposit()[1],collectorfromdeposit()[1])).move()
     #print(time_passed(loop_time,45))
     #print(loop_time)
+    
+    if upstairs == True:
+        if lastslotcheck == bagslotcolor:
+            if upcheck == pos6:
+                if checkrock == red:
+                    print('Gay ass bitch ass rock in my way go mine that gay boy')
+                    Randomize(rock_in_my_way).randleft()
+                    sleep(7)
+                    Randomize(miningspotfromrock).randleft()
+                    sleep(7)
+                   
+                else:
+                    print('no rock in the way get to mining tubby')
+                    Randomize(miningspotfromladder).randleft()
+                    sleep(12)
+                       
+            elif upcheck == pos2:
+                Randomize(ladderfromhopper).randleft()
+                sleep(6)
+            elif lastslotcheck != bagslotcolor:
+                print('bag full')
+                try:
+                    rockrect = rockobs.find(ss,0.50,debug_mode="rectangles")
+                    rockpoints = wincap.get_screen_position(rockrect[0])
+                    Randomize((rockpoints[0]+5,rockpoints[0]+5,rockpoints[1]-5,rockpoints[1]-5)).randleft()
+                    sleep(9)
+                except:
+                    rockrect = rockobs.find(ss,0.40,debug_mode="rectangles")
+                    rockpoints = wincap.get_screen_position(rockrect[0])
+                    Randomize((rockpoints[0]+5,rockpoints[0]+5,rockpoints[1]-5,rockpoints[1]-5)).randleft()
+                    sleep(9)
+
+            else:
+                if datetime.now().second == 45:
+                    try:
+                        miningspot=findobjat(miningrockcolor)
+                        Randomize((miningspot[0]+4,miningspot[0]+8,miningspot[1]+6,miningspot[1]+8)).randleft()
+                        sleep(1)
+                    except:
+                        print('oops')
+        else:
+            print('bagfull')
+            try:
+                rockrect = rockobs.find(ss,0.50,debug_mode="rectangles")
+                rockpoints = wincap.get_screen_position(rockrect[0])
+                Randomize((rockpoints[0]+5,rockpoints[0]+5,rockpoints[1]-5,rockpoints[1]-5)).randleft()
+                sleep(9)
+            except:
+                rockrect = rockobs.find(ss,0.40,debug_mode="rectangles")
+                rockpoints = wincap.get_screen_position(rockrect[0])
+                Randomize((rockpoints[0]+5,rockpoints[0]+5,rockpoints[1]-5,rockpoints[1]-5)).randleft()
+                sleep(9)
+            Randomize(fromrocktoladder).randleft()
+            upstairs=False
+            logcounter+=1
+            count+=1
+            sleep(10)
+       
+    elif upstairs == False:
+        print('downstairs')
+        if upcheck == pos1:
+            if logcounter == 30:
+                keyboard.press('pageup')# hotkey to switch worlds
+                sleep(5)
+                keyboard.release('pageup')# release the key presss
+                sleep(7.5)
+                keyboard.press('x')# bag hotkey ppress
+                sleep(1)
+                keyboard.release('x')#bag hotkey release
+                sleep(2.5)
+            
+            upstairs = True
+            Randomize(hopper).randleft()
+            sleep(4)
+        
+        elif upcheck == pos2:
+            if count != 2:
+                upstairs = True
+                Randomize(ladderfromhopper).randleft()
+                sleep(8)
+
+            keyboard.press_and_release('space')   
+            Randomize(collector).randleft()
+            count = 0
+            sleep(6)
+
+            
+        elif upcheck == pos3:
+            Randomize(bank).randleft()
+            sleep(7.5)
+        elif centercheck == bankcheckc:
+        
+            Randomize(depositbutton).randleft()
+            sleep(1.6)
+            Randomize(exitbutton).randleft()
+            sleep(1.6)
+            bankcounts+=1
+        elif upcheck == pos4: 
+            if bankcounts != 2:
+                Randomize(collectorfrombank).randleft()
+                sleep(4)
+            else:
+                Randomize(ladderfrombank).randleft()
+                bankcounts = 0
+                sleep(8)
+                upstairs = True
+                
+        else:
+            print('oops')
+            
+    else:
+        print('I dont know what to do')
+        break
+"""try:
+                hopperrect = hopper.find(ss,0.50,debug_mode="rectangles")
+                hopperpoints = wincap.get_screen_position(hopperrect[0])
+                Randomize((hopperpoints[0],hopperpoints[0],hopperpoints[1],hopperpoints[1])).randleft()
+                sleep(8)
+            except:
+                print('oops3')
+                break"""
+#randomize clicks with randomize class made delta is for cropping the extra none visual boarders wincap grabs
+#for 3842*2160 may need to double delta var at top
+#if you just wanna one poition uncomment this below and comment the for loop out
+#
+
+"""#loops through rect list and gets points then moves mouse over each item for testing get teak logs out of bank to test
+for i in range(len(testrectangles)):
+    testpoints= wincap.get_screen_position(testrectangles[i])
+    Randomize((testpoints[0]-delta,testpoints[0]+delta, testpoints[1]-delta,testpoints[1]+delta)).move()"""
+
+"""
+try:
+    rockrect = rockobs.find(ss,0.50,debug_mode="rectangles")
+    rockpoints = wincap.get_screen_position(rockrect[0])
+    Randomize((rockpoints[0]+5,rockpoints[0]+5,rockpoints[1]-10,rockpoints[1]-10)).randleft()
+    sleep(2)
+            
+    miningrectangles= miningspot.find(ss,0.70,debug_mode="rectangles")
+    miningpoints= wincap.get_screen_position(miningrectangles[-1])
+    Randomize((miningpoints[0],miningpoints[0],miningpoints[1],miningpoints[1])).randleft()
+except:
+    print('oops')
+    
+    
+    
     if count == 2:
         if downcheck == (0,0,2):
             keyboard.press_and_release('space')
@@ -173,6 +372,8 @@ while True:
             Randomize((bottomladder2points[0],bottomladder2points[0],bottomladder2points[1],bottomladder2points[1])).randleft()
             bankcounts = 0
             count = 0
+            logcounter+=1
+            
 
             print(bankcounts,  count)
             sleep(8)
@@ -209,7 +410,7 @@ while True:
                 except:
                     print('asdfaewaf')
         
-            elif downcheck != yellow and upstairs == True:
+            elif downcheck != yellow and upstairs == True and logcounter != 15:
                 print('mining...')
                 if datetime.now().second == 45:
                     try:
@@ -221,7 +422,18 @@ while True:
                         sleep(8)
                     except:
                         print('couldnt find mining spt after waiting 45 secs')
-
+            elif downcheck != yellow and upstairs == True and logcounter == 15:
+                
+                keyboard.press('pageup')# hotkey to switch worlds
+                sleep(5)
+                keyboard.release('pageup')# release the key presss
+                sleep(7.5)
+                keyboard.press('x')# bag hotkey ppress
+                sleep(1)
+                keyboard.release('x')#bag hotkey release
+                logcounter = 0
+                sleep(2.5)
+                
             else:
                 print('looking for spot to mine')
                 try:
@@ -307,37 +519,12 @@ while True:
             Randomize((rockpoints[0]+5,rockpoints[0]+5,rockpoints[1]-10,rockpoints[1]-10)).randleft()
             sleep(9)
         except:
-            print('go go go')
             
-            
-            
-            """try:
-                hopperrect = hopper.find(ss,0.50,debug_mode="rectangles")
-                hopperpoints = wincap.get_screen_position(hopperrect[0])
-                Randomize((hopperpoints[0],hopperpoints[0],hopperpoints[1],hopperpoints[1])).randleft()
-                sleep(8)
-            except:
-                print('oops3')
-            break"""
-#randomize clicks with randomize class made delta is for cropping the extra none visual boarders wincap grabs
-#for 3842*2160 may need to double delta var at top
-#if you just wanna one poition uncomment this below and comment the for loop out
-#
-
-"""#loops through rect list and gets points then moves mouse over each item for testing get teak logs out of bank to test
-for i in range(len(testrectangles)):
-    testpoints= wincap.get_screen_position(testrectangles[i])
-    Randomize((testpoints[0]-delta,testpoints[0]+delta, testpoints[1]-delta,testpoints[1]+delta)).move()"""
-
-"""
-try:
-    rockrect = rockobs.find(ss,0.50,debug_mode="rectangles")
-    rockpoints = wincap.get_screen_position(rockrect[0])
-    Randomize((rockpoints[0]+5,rockpoints[0]+5,rockpoints[1]-10,rockpoints[1]-10)).randleft()
-    sleep(2)
-            
-    miningrectangles= miningspot.find(ss,0.70,debug_mode="rectangles")
-    miningpoints= wincap.get_screen_position(miningrectangles[-1])
-    Randomize((miningpoints[0],miningpoints[0],miningpoints[1],miningpoints[1])).randleft()
-except:
-    print('oops')"""
+            rockrect = rockobs.find(ss,0.40,debug_mode="rectangles")
+            rockpoints = wincap.get_screen_position(rockrect[0])
+            Randomize((rockpoints[0]+5,rockpoints[0]+5,rockpoints[1]-10,rockpoints[1]-10)).randleft()
+            sleep(9)    
+    
+    
+    
+    """
