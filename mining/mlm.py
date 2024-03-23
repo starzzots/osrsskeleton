@@ -7,7 +7,7 @@ from tools.windowcapture import WindowCapture
 from tools.vision import Vision
 from tools.clicks import *
 from time import time, sleep
-from datetime import datetime
+
 
 
 # initialize the WindowCapture class
@@ -108,12 +108,19 @@ def collectorfromdeposit():
     
     return location
 
-def time_passed(current_time, secs):
-    return time() - current_time >= secs
 
-count=0
+def stopwatch(seconds):
+    timer=seconds
+    for i in range(0, timer):
+        print(i)
+        sleep(1)
+      
+
+
+
+count=1
 bankcounts=0
-logcounter=0
+logcounter=29
 
 """while start == True:
     if datetime.now().second == 50:
@@ -129,7 +136,8 @@ while True:
 
     #paydirt= Vision('images\paydirt.jpg')
     #miningspot=Vision('images\miningspot.jpg')
-    loop_time = time()
+    
+    
     inventory=['paydirt','sapphire','emerald','ruby','diamond'] 
     # used for testing change to your {insert your name of ss taken}.jpg file name
     
@@ -151,6 +159,13 @@ while True:
     exitbutton = Locate(592,526).item()
     ladderfrombank = Locate(730,489).item()
     collectorfrombank = Locate(842,241).item()
+    rockcheck1=Locate(684,494).item()
+    ladderiffucked=Locate(676,309).item()
+    hopperclickiffailed=Locate(695,327).item()
+    #print(wincap.coords)
+    
+
+
     #print(lastslotcheck)
     #-8 x for checkingleft while mining for color change
     left=player()[0]
@@ -158,8 +173,12 @@ while True:
     right=player()[2]
     up=player()[3]
     center=player()[-1]
+    
     checkrock=pg.pixel(rockfromladdercheck[0],rockfromladdercheck[-1])
     lastslotcheck=pg.pixel(lastslot[0],lastslot[-1])
+    rockcheckc1=pg.pixel(rockcheck1[0],rockcheck1[-1])
+    
+
 
     leftcheck=pg.pixel(left[0],left[1])
     downcheck=pg.pixel(down[0],down[1])
@@ -167,8 +186,8 @@ while True:
     upcheck=pg.pixel(up[0],up[1])
     centercheck=pg.pixel(center[0],center[1])
 
-
-    #print(wincap.coords)
+    
+    # Your code here
     #print(upcheck)
     #Randomize((center[0],center[0],center[1],center[1])).move()
     
@@ -188,7 +207,8 @@ while True:
     
     if upstairs == True:
         if lastslotcheck == bagslotcolor:
-            if upcheck == pos6:
+            sleep(2)
+            if upcheck == pos6 and lastslotcheck == bagslotcolor:
                 if checkrock == red:
                     print('Gay ass bitch ass rock in my way go mine that gay boy')
                     Randomize(rock_in_my_way).randleft()
@@ -200,48 +220,41 @@ while True:
                     print('no rock in the way get to mining tubby')
                     Randomize(miningspotfromladder).randleft()
                     sleep(12)
-                       
-            elif upcheck == pos2:
-                Randomize(ladderfromhopper).randleft()
-                sleep(6)
-            elif lastslotcheck != bagslotcolor:
-                print('bag full')
-                try:
-                    rockrect = rockobs.find(ss,0.50,debug_mode="rectangles")
-                    rockpoints = wincap.get_screen_position(rockrect[0])
-                    Randomize((rockpoints[0]+5,rockpoints[0]+5,rockpoints[1]-5,rockpoints[1]-5)).randleft()
-                    sleep(9)
-                except:
-                    rockrect = rockobs.find(ss,0.40,debug_mode="rectangles")
-                    rockpoints = wincap.get_screen_position(rockrect[0])
-                    Randomize((rockpoints[0]+5,rockpoints[0]+5,rockpoints[1]-5,rockpoints[1]-5)).randleft()
-                    sleep(9)
 
             else:
-                if datetime.now().second == 45:
-                    try:
-                        miningspot=findobjat(miningrockcolor)
-                        Randomize((miningspot[0]+4,miningspot[0]+8,miningspot[1]+6,miningspot[1]+8)).randleft()
-                        sleep(1)
-                    except:
-                        print('oops')
+                sleep(45)
+                try:
+                    print('looking for mining spot...')
+                    miningspot=findobjat(miningrockcolor)
+                    Randomize((miningspot[0]+4,miningspot[0]+8,miningspot[1]+6,miningspot[1]+8)).randleft()
+                    sleep(1)
+                except:
+                    print('oops')
+    
         else:
             print('bagfull')
-            try:
-                rockrect = rockobs.find(ss,0.50,debug_mode="rectangles")
-                rockpoints = wincap.get_screen_position(rockrect[0])
-                Randomize((rockpoints[0]+5,rockpoints[0]+5,rockpoints[1]-5,rockpoints[1]-5)).randleft()
-                sleep(9)
-            except:
-                rockrect = rockobs.find(ss,0.40,debug_mode="rectangles")
-                rockpoints = wincap.get_screen_position(rockrect[0])
-                Randomize((rockpoints[0]+5,rockpoints[0]+5,rockpoints[1]-5,rockpoints[1]-5)).randleft()
-                sleep(9)
-            Randomize(fromrocktoladder).randleft()
-            upstairs=False
-            logcounter+=1
-            count+=1
-            sleep(10)
+            if rockcheckc1 == red:
+                sleep(4)
+                Randomize((rockcheck1[0]-5,rockcheck1[0]-5,rockcheck1[-1]+5,rockcheck1[-1]+5)).randleft()
+                sleep(7)
+                Randomize(fromrocktoladder).randleft()
+                upstairs=False
+                logcounter+=1
+                sleep(10)
+            elif upcheck == pos6 and lastslotcheck != bagslotcolor:
+                print('bagstill full go downstairs')
+                upstairs=False
+                Randomize(ladderiffucked).randleft()
+                sleep(1)
+            
+            else:
+                print('couldnt find rock find first location mining spot to reroute\n')
+                try:
+                    miningspot=findobjat(miningrockcolor)
+                    Randomize((miningspot[0]+4,miningspot[0]+8,miningspot[1]+6,miningspot[1]+8)).randleft()
+                    sleep(1)
+                except:
+                    print('oops')
        
     elif upstairs == False:
         print('downstairs')
@@ -255,28 +268,39 @@ while True:
                 sleep(1)
                 keyboard.release('x')#bag hotkey release
                 sleep(2.5)
-            elif count != 2:
-                upstairs = True
-                Randomize(hopper).randleft()
-                sleep(4)
-                keyboard.press_and_release('space')
+                logcounter = 0
+                print(f'logcounter= {logcounter}, depositcount= {count}')
+        
             else:
                 upstairs = False
                 Randomize(hopper).randleft()
                 sleep(4)
+                #print(f"{count}")
                 keyboard.press_and_release('space')
         
-        elif upcheck == pos2:
-            if count != 2:
+        elif upcheck == pos2 and lastslotcheck == bagslotcolor:
+            keyboard.press_and_release('space')
+            count+=1
+            print(f'{count}')
+            if count >= 2:
+                sleep(1)  
+                keyboard.press_and_release('space')
+                Randomize(collector).randleft()
+                count = 0
+                sleep(6)
+                Randomize(bank).randleft()
+                sleep(7.5)
+            else:
                 upstairs = True
                 Randomize(ladderfromhopper).randleft()
-                sleep(8)
-                
-            keyboard.press_and_release('space')
-            Randomize(collector).randleft()
-            count = 0
-            sleep(6)
+                sleep(12)
             
+            
+        elif upcheck == pos2 and lastslotcheck != bagslotcolor:
+            Randomize(hopperclickiffailed).randleft()
+            sleep(2)
+
+
         elif upcheck == pos3:
             Randomize(bank).randleft()
             sleep(7.5)
@@ -294,6 +318,7 @@ while True:
             else:
                 Randomize(ladderfrombank).randleft()
                 bankcounts = 0
+                count=0
                 sleep(8)
                 upstairs = True
                 
