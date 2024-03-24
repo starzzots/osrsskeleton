@@ -16,3 +16,12 @@ def findobjat(objsRGBVal,coords=(0,0,1080,670),stepleftright=1,stepupdown=1):#to
                             
         if flag == 1:
                 return new_x,new_y
+
+class Locate():
+    def __init__(self, deltax, deltay):
+        self.deltax=deltax
+        self.deltay=deltay
+        self.locationc = wincap.coords[0]+self.deltax,wincap.coords[1]+self.deltay
+    def item(self):
+        location = (self.locationc[0],self.locationc[0],self.locationc[1],self.locationc[1])
+        return location
