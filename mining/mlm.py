@@ -106,7 +106,7 @@ def miningcheck(timer=45,miningcheck='miningcolorcheck',a='lastslotcheck',b=0):#
 
 test=(114,16,160)
 miningchecklocation=(74,84,553,609)
-rockobslocation=(227,178,532,517)
+rockobslocation=(139,47,538,605)
 gameplaylocation=(29,71,561,618)
 banklocation=(498,195,661,328)
 failchecklocation=(28,445,562,643)
@@ -192,7 +192,7 @@ while True:
     bankcheckstatement=pg.pixel(bankcheck[0],bankcheck[-1])
 
     topladder2=findobjat(topladderc,gameplaylocation,delta3x=8,delta4y=8)
-    rockobj=findobjat(red,gameplaylocation,delta3x=8,delta4y=8)
+    rockobj=findobjat(red,rockobslocation,delta3x=8,delta4y=8)
     miningspot42=findobjat(miningrockcolor,miningchecklocation,stepupdown=4,delta1x=0,delta2y=0,delta3x=5,delta4y=5)
     miningspot2=findobjat(miningrockcolor,failchecklocation,delta1x=8,delta2y=8,delta3x=8,delta4y=8)
     hopper=findobjat(hopperc, gameplaylocation,delta1x=5,delta2y=5,delta3x=7,delta4y=7)
