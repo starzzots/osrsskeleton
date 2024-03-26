@@ -40,7 +40,7 @@ random_jump_spot_on_fifth2 = (1907,1926,1053,1065)
 fail1_start = (2392, 2408, 1504, 1513)
 fail2_start = (2056, 2077, 1369, 1380)
 
-# token 1st
+# token 1st2
 token_1st_grab = (1915, 1924, 1058, 1064)
 token_1st_jump = (1809, 1833, 1050, 1089)
 token_1st_location = (1920, 1059)
@@ -51,8 +51,8 @@ logout_button = (3598, 3624, 2042, 2073)
 clicK_here_to_logout = (3519, 3700, 1971, 1993)
 
 # check login page
-login_page = (1889, 509)
-login_page_color = (74, 76, 85)
+login_page = (1887, 665)
+login_page_color = (164, 202, 156)
 log_in = (1752, 2032, 397, 452)
 click_here_play = (1741, 2045, 490, 587)
 

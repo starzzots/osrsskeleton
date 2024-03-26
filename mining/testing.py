@@ -1,3 +1,4 @@
+
 def findobjat(objsRGBVal,coords=(0,0,1080,670),stepleftright=1,stepupdown=1):#topleftx, toplefty, bottomrightx, bottomrighty
     flag=0
     wincap = WindowCapture('RuneLite')
