@@ -13,7 +13,7 @@ white=(255,255,255)
 purple=(114,16,160)
 tree_color=(255,115,0)
 num=2
-logout=20
+logout = 0
 
 def alching():
     num=2
@@ -36,7 +36,7 @@ def fletching():
     num=2
     
     for i in range(25):
-        sleep(2)
+        sleep(1.8)
         if pg.pixel(bagslot[num][0],bagslot[num][-1]) != white:
             num+=1
         else:
@@ -55,58 +55,51 @@ def worldhopper():
     sleep(2.5)
     return 0
 
-def main():
+def bagcheckloop(num):
     bagcheck=pg.pixel(bagslot[26][0],bagslot[26][-1])
-    woodcuttingcheck=pg.pixel(woodcutting[0],woodcutting[-1])
-    #print(bagcheck)
-    if woodcuttingcheck == woodcuttingcolor:
-        sleep(1)
-        return 0
-
-    elif bagcheck == white:
-        print('bag is full start fletching...')
+    if bagcheck == white:
+        print('bag is full')
         Randomize(bagslot[1]).randleft()
         sleep(1)
         Randomize(bagslot[num]).randleft()
-        sleep(1)
+        sleep(.5)
         keyboard.press_and_release("space")
-        sleep(1)
+        sleep(.5)
         num=fletching()
         sleep(1)
-        return 0
-        
-    elif bagcheck == purple:
+        return num
+    return num
+
+def logoutchecker():
+    bagcheck=pg.pixel(bagslot[26][0],bagslot[26][-1])
+    if bagcheck == purple:
         print('start alching...')
         Randomize(bagslot["magebook"]).randleft()
-        sleep(1)
+        sleep(.8)
         alching()
-        num = 2
         Randomize(bagslot["bagicon"]).randleft()
+        sleep(.5)
         return 1
+    return 0
+
+def woodcuttingloop():
+    woodcuttingcheck=pg.pixel(woodcutting[0],woodcutting[-1])
+    if woodcuttingcheck == woodcuttingcolor:
+        sleep(1)
     else:
         print('looking for tree')
         findtree()
         sleep(2)
-        return 0
-
-
 
 while True:
     if keyboard.is_pressed('q'):
         sys.exit()
-    
-    elif logout >= 20:
-        print("hopping worlds...")
+    if logout >= 20:
         logout=worldhopper()
-        logout=0
-        print(logout)
+    temp=logoutchecker()
+    logout=logout+temp
+    tempnum=bagcheckloop(num)
+    num=tempnum
+    woodcuttingloop()
 
-    temp=main()
-    
-    logout = logout + temp
-
-    
-
-    
-    
         
