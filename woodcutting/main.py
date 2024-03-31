@@ -12,16 +12,16 @@ woodcuttingcolor=(0,255,0)
 white=(255,255,255)
 purple=(114,16,160)
 tree_color=(255,115,0)
-num=2
-logout = 0
+num = 2
+logout = 19
 
 def alching():
     num=2
     for _ in range(25):
         Randomize(bagslot["alch"]).randleft()
-        sleep(1.2)
+        sleep(1.3)
         Randomize(bagslotclicks[num]).randleft()
-        sleep(1.2)
+        sleep(1.3)
         num+=1
 
 def findtree():
@@ -60,11 +60,11 @@ def bagcheckloop(num):
     if bagcheck == white:
         print('bag is full')
         Randomize(bagslot[1]).randleft()
-        sleep(1)
+        sleep(1.2)
         Randomize(bagslot[num]).randleft()
-        sleep(.5)
+        sleep(1.2)
         keyboard.press_and_release("space")
-        sleep(.5)
+        sleep(1.2)
         num=fletching()
         sleep(1)
         return num
