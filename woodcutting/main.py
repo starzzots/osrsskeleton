@@ -12,6 +12,8 @@ woodcuttingcolor=(0,255,0)
 white=(255,255,255)
 purple=(114,16,160)
 tree_color=(255,115,0)
+num=2
+logout=20
 
 def alching():
     num=2
@@ -54,13 +56,12 @@ def worldhopper():
     return 0
 
 def main():
-    num = 2
-    logout=20
     bagcheck=pg.pixel(bagslot[26][0],bagslot[26][-1])
     woodcuttingcheck=pg.pixel(woodcutting[0],woodcutting[-1])
     #print(bagcheck)
     if woodcuttingcheck == woodcuttingcolor:
         sleep(1)
+        return 0
 
     elif bagcheck == white:
         print('bag is full start fletching...')
@@ -72,6 +73,7 @@ def main():
         sleep(1)
         num=fletching()
         sleep(1)
+        return 0
         
     elif bagcheck == purple:
         print('start alching...')
@@ -80,17 +82,12 @@ def main():
         alching()
         num = 2
         Randomize(bagslot["bagicon"]).randleft()
-        logout += 1
-        print(logout)
-        sleep(1)
-    elif logout >= 20:
-        print("hopping worlds...")
-        logout=worldhopper()
-        print(logout)
+        return 1
     else:
         print('looking for tree')
         findtree()
         sleep(2)
+        return 0
 
 
 
@@ -98,7 +95,18 @@ while True:
     if keyboard.is_pressed('q'):
         sys.exit()
     
-    main()
+    elif logout >= 20:
+        print("hopping worlds...")
+        logout=worldhopper()
+        logout=0
+        print(logout)
+
+    temp=main()
+    
+    logout = logout + temp
+
+    
+
     
     
         
